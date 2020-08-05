@@ -5,14 +5,14 @@ import random
 import math
 from matplotlib import pyplot
 
-def createPerson(height,width):
+def createPerson(height,width,circleradius):
 	#create a person and move them to a point
 	p=turtle.Turtle()
 	p.shape('circle')
 	p.color('green')
 	p.speed(0)
 	p.penup()
-	p.goto(random.randint(-width//2,width//2), random.randint(-height//2,height//2))
+	p.goto(random.randint( (-width//2)+circleradius, (width//2)-circleradius), random.randint( (-height//2)+circleradius, (height//2)-circleradius) )
 
 	#define velocity in x and y
 	#vx=random.uniform(-15,15)
@@ -40,21 +40,45 @@ stepsize=1
 #variables that influence the outbreak
 npeople=350
 circlediam=20.0
+circleradius=circlediam/2
 infectionduration=14
-transmission_chance=0.8
+transmission_chance=0.5	
 hospital_beds=30
 mortality_rate=0.06
 
 #create a window 
 win=turtle.getscreen()
 win.tracer(0)
-width=win.window_width()
-height=win.window_height()
+### Uncomment below to have window be proportional to screen
+#width=win.window_width()
+#height=win.window_height()
+#print (width, height)
+width=800
+height=800
+t=turtle.Turtle()
+t.hideturtle()
+
+t.penup()
+t.goto((-width-circlediam)//2,(-height-circlediam)//2)
+t.pendown()
+t.goto((width+circlediam)//2,(-height-circlediam)//2)
+t.goto((width+circlediam)//2,(height+circlediam)//2)
+t.goto((-width-circlediam)//2,(height+circlediam)//2)
+t.goto((-width-circlediam)//2,(-height-circlediam)//2)
+
+# t.penup()
+# t.goto((-width)//2,(-height)//2)
+# t.pendown()
+# t.goto((width)//2,(-height)//2)
+# t.goto((width)//2,(height)//2)
+# t.goto((-width)//2,(height)//2)
+# t.goto((-width)//2,(-height)//2)
+t.penup()
 
 #set up the population in personlist
 personlist=[]
 for person in range(npeople):
-	personlist.append(createPerson(height,width))
+	personlist.append(createPerson(height,width,circleradius))
 
 #make one person infected
 personlist[-1]['infected']=True
@@ -82,13 +106,22 @@ for n in range(steps):
 			#person['point'].setx(newx)
 			#person['point'].sety(newy)
 		
-			person['point'].goto(newx,newy)
 
-			#make circle bounce if it "hits" a wall
-			if newx > width/2 or newx < -1*width/2:
+			#make circle bounce if it "hits" a wall. One conditional for each wall. I think there's a more efficient way to do this with just one conditional.
+			if newx-circleradius > width/2: #positive x wall
+				newx=width-newx
 				person['vx']=person['vx']*-1
-			if newy > height/2 or newy < -1*width/2:
+			elif  newx+circleradius < -width/2:
+				newx=-width-newx
+				person['vx']=person['vx']*-1
+			elif newy-circleradius > height/2:
+				newy=height-newy
 				person['vy']=person['vy']*-1
+			elif newy+circleradius < -width/2:
+				newy=-height-newy
+				person['vy']=person['vy']*-1
+
+			person['point'].goto(newx,newy)
 			
 			#make person get better over infectionduration
 			if person['infected']:
