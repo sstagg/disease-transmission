@@ -3,7 +3,8 @@ import turtle
 import sys
 import random
 import math
-from matplotlib import pyplot
+import numpy as np
+from matplotlib import pyplot as plt
 
 def createPerson(height,width,circleradius):
 	#create a person and move them to a point
@@ -192,8 +193,30 @@ print ("Total infected = %d/%d or %.2f%%" % (totalinfected, npeople, totalinfect
 print ("Total dead = %d/%d or %.2f%%" % (totaldead, npeople, totaldead/npeople*100))
 print ("Total days of pandemic %d" % (n))
 
-pyplot.plot((0,len(infectedlist)), (hospital_beds,hospital_beds))
-pyplot.plot(infectedlist)
-pyplot.plot(dailyinfections)
-pyplot.plot(totalinfections)
-pyplot.show()
+
+
+y1 = np.array(dailyinfections)
+n = len(dailyinfections)
+x = range(0,n,1)
+del totalinfections[n]
+y2 = np.array(totalinfections)
+
+
+
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.set_xlabel('Length of Pandemic (days)')
+ax1.set_ylabel('Daily Infections', color=color)
+ax1.plot(x, y1, color=color)
+ax1.set_ylim([0,300])
+ax1.tick_params(axis='y')
+
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+color= 'tab:blue'
+ax2.set_ylabel('Total Infections', color=color)  # we already handled the x-label with ax1
+ax2.plot(x, y2, color=color)
+ax2.set_ylim([0,300])
+ax2.tick_params(axis='y')
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+plt.show()
