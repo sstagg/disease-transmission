@@ -33,7 +33,7 @@ def pointCheck(x,y, personlist, diameter):
 
 steps=10000
 stepsize=1
-npoints=100
+npoints=150
 
 circlediam=20.0
 circleradius=circlediam/2
@@ -104,7 +104,9 @@ for step in range(steps):
 		for b in range (a+1, len(pointlst)):
 			p1x,p1y=(pointlst[a].x,pointlst[a].y)
 			p2x,p2y=(pointlst[b].x,pointlst[b].y)
-			d=math.sqrt((p2x-p1x)**2+(p2y-p1y)**2)
+			dx=p2x-p1x
+			dy=p2y-p1y
+			d=math.sqrt(dx**2+dy**2)
 			if d <= circlediam:
 				#make people bounce off of each other
 				newavx=pointlst[b].vx
@@ -117,18 +119,22 @@ for step in range(steps):
 				pointlst[b].vx=newbvx		
 				pointlst[b].vy=newbvy
 				
-				dx=pointlst[a].vx*stepsize
-				dy=pointlst[a].vy*stepsize
-				pointlst[a].x=pointlst[a].x+dx/2
-				pointlst[a].y=pointlst[a].y+dy/2
-				point.goto(pointlst[a].x,pointlst[a].y)
+				
+				#move back to point of contact
+				scale=math.sqrt(circlediam/(dx**2+dy**2))
+				newdx=dx*scale
+				newdy=dy*scale
+				pointlst[a].x=pointlst[a].x-newdx/2
+				pointlst[a].y-pointlst[a].y-newdy/2
 
-				dx=pointlst[b].vx*stepsize
-				dy=pointlst[b].vy*stepsize
-				pointlst[b].x=pointlst[b].x+dx/2
-				pointlst[b].y=pointlst[b].y+dy/2
+				pointlst[b].x=pointlst[b].x+newdx/2
+				pointlst[b].y=pointlst[b].y+newdy/2
+
+				point.goto(pointlst[a].x,pointlst[a].y)
 				point.goto(pointlst[b].x,pointlst[b].y)
-	
+				
+				#win.update()
+				
 	
 	
 
