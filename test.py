@@ -78,12 +78,23 @@ for step in range(steps):
 		
 		point.x=point.x+dx
 		point.y=point.y+dy
-		point.goto(point.x,point.y)
-		if point.x > width/2 or point.x < -1*width/2:
+		if point.x > width/2:
 			point.vx=point.vx*-1
+			point.x=width/2
+		elif point.x < -width/2:
+			point.vx=point.vx*-1
+			point.x=-width/2
 			
-		if point.y > height/2 or point.y < -1*width/2:
+		if point.y > height/2 :
 			point.vy=point.vy*-1
+			point.y=height/2
+			
+		elif point.y < -1*width/2:
+			point.vy=point.vy*-1
+			point.y=-height/2
+
+		point.goto(point.x,point.y)
+
 		#print (point.x, point.y, point.position())
 	#if step%10 == 0:
 		#print(step)
