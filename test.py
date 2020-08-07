@@ -65,12 +65,6 @@ while len(pointlst) < npoints :
 		pointlst.append(p)
 
 
-#define velocity in x and y
-#vx=random.uniform(-5,5)
-#vy=random.uniform(-5,5)
-vx=0.1
-vy=0
-
 for step in range(steps):
 	for point in pointlst:
 		dx=point.vx*stepsize
@@ -98,7 +92,7 @@ for step in range(steps):
 		#print (point.x, point.y, point.position())
 	#if step%10 == 0:
 		#print(step)
-	win.update()
+	#win.update()
 		
 	for a in range(len(pointlst)):
 		for b in range (a+1, len(pointlst)):
@@ -130,10 +124,10 @@ for step in range(steps):
 				pointlst[b].x=pointlst[b].x+newdx/2
 				pointlst[b].y=pointlst[b].y+newdy/2
 
-				point.goto(pointlst[a].x,pointlst[a].y)
-				point.goto(pointlst[b].x,pointlst[b].y)
+				pointlst[a].goto(pointlst[a].x,pointlst[a].y)
+				pointlst[b].goto(pointlst[b].x,pointlst[b].y)
 				
-				#win.update()
+	win.update()
 				
 	
 	
