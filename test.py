@@ -33,7 +33,7 @@ def pointCheck(x,y, personlist, diameter):
 
 steps=10000
 stepsize=1
-npoints=150
+npoints=100
 
 circlediam=20.0
 circleradius=circlediam/2
