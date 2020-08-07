@@ -5,20 +5,22 @@ import random
 import math
 from matplotlib import pyplot
 
-def createPerson(height,width,circleradius):
+def createPerson(height,width,circleradius,point):
 	#create a person and move them to a point
 	p=turtle.Turtle()
 	p.shape('circle')
 	p.color('green')
 	p.speed(0)
 	p.penup()
-	p.goto(random.randint( (-width//2)+circleradius, (width//2)-circleradius), random.randint( (-height//2)+circleradius, (height//2)-circleradius) )
+	#p.goto(random.randint( (-width//2)+circleradius, (width//2)-circleradius), random.randint( (-height//2)+circleradius, (height//2)-circleradius) )
+	p.goto(point[0],point[1])
 
 	#define velocity in x and y
-	#vx=random.uniform(-15,15)
-	#vy=random.uniform(-15,15)
-	vx=random.choice([-10,10])
-	vy=random.choice([-10,10])
+	vx=random.uniform(-5,5)
+	vy=random.uniform(-5,5)
+	#r=list(range(-10,-6))+list(range(6,10))
+	#vx=random.choice(r)
+	#vy=random.choice(r)
 
 
 	#this block of code sets up a dictionary of characteristics for a person
@@ -33,16 +35,28 @@ def createPerson(height,width,circleradius):
 	#print (p.get_shapepoly())
 	#the function above on my computer shows that a circle has a diameter of 20
 	return(person)
+
+def pointCheck(point, personlist, diameter):
+	p1x,p1y=point
+	safe=True
+	for personb in personlist:
+		p2x,p2y=personb['point'].position()
+		d=math.sqrt((p2x-p1x)**2+(p2y-p1y)**2)
+		if d < diameter:
+			safe=False
+			break
+	return safe
 	
 steps=10000
 stepsize=1
 
 #variables that influence the outbreak
-npeople=350
+npeople=250
 circlediam=20.0
 circleradius=circlediam/2
-infectionduration=14
-transmission_chance=0.5	
+infectionduration=140
+
+transmission_chance=0.8	
 hospital_beds=30
 mortality_rate=0.06
 
@@ -77,8 +91,19 @@ t.penup()
 
 #set up the population in personlist
 personlist=[]
-for person in range(npeople):
-	personlist.append(createPerson(height,width,circleradius))
+
+#for person in range(npeople):
+print ("Populating simulation")
+initpoint=(random.randint( (-width//2)+circlediam, (width//2)-circlediam), random.randint( (-height//2)+circlediam, (height//2)-circlediam))
+personlist.append(createPerson(height,width,circleradius,initpoint))
+while len(personlist) < npeople:
+	print (len(personlist))
+	testpoint=(random.randint( (-width//2)+circleradius, (width//2)-circleradius), random.randint( (-height//2)+circleradius, (height//2)-circleradius))
+	if pointCheck(testpoint, personlist, circlediam) is True:
+		personlist.append(createPerson(height,width,circleradius,testpoint))
+	else:
+		print ("Rejected")
+
 
 #make one person infected
 personlist[-1]['infected']=True
@@ -101,6 +126,7 @@ for n in range(steps):
 			x,y=person['point'].position()
 			dx=person['vx']*stepsize
 			dy=person['vy']*stepsize
+			
 			newx=x+dx
 			newy=y+dy
 			#person['point'].setx(newx)
@@ -108,17 +134,25 @@ for n in range(steps):
 		
 
 			#make circle bounce if it "hits" a wall. One conditional for each wall. I think there's a more efficient way to do this with just one conditional.
-			if newx-circleradius > width/2: #positive x wall
-				newx=width-newx
+# 			if newx-circleradius > width/2: #positive x wall
+# 				newx=newx-width
+# 				#newx=width-newx
+# 				person['vx']=person['vx']*-1
+# 			elif  newx+circleradius < -width/2:
+# 				newx=-newx-width
+# 				#newx=-width-newx
+# 				person['vx']=person['vx']*-1
+# 			elif newy-circleradius > height/2:
+# 				newy=newy-height
+# 				#newy=height-newy
+# 				person['vy']=person['vy']*-1
+# 			elif newy+circleradius < -width/2:
+# 				newy=-newy-newy
+# 				#newy=-height-newy
+# 				person['vy']=person['vy']*-1
+			if newx > width/2 or newx < -1*width/2:
 				person['vx']=person['vx']*-1
-			elif  newx+circleradius < -width/2:
-				newx=-width-newx
-				person['vx']=person['vx']*-1
-			elif newy-circleradius > height/2:
-				newy=height-newy
-				person['vy']=person['vy']*-1
-			elif newy+circleradius < -width/2:
-				newy=-height-newy
+			if newy > height/2 or newy < -1*width/2:
 				person['vy']=person['vy']*-1
 
 			person['point'].goto(newx,newy)
@@ -146,10 +180,11 @@ for n in range(steps):
 	newinfections=0
 	for a in range(len(personlist)):
 		for b in range (a+1, len(personlist)):
+			arbscale=1
 			p1x,p1y=personlist[a]['point'].position()
 			p2x,p2y=personlist[b]['point'].position()
 			d=math.sqrt((p2x-p1x)**2+(p2y-p1y)**2)
-			if d < circlediam:
+			if d*arbscale < circlediam:
 				#make people bounce off of each other
 				newax=personlist[b]['vx']
 				newbx=personlist[a]['vx']
