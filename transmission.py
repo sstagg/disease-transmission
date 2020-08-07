@@ -57,7 +57,7 @@ stepsize=1
 npeople=350
 circlediam=20.0
 infectionduration=14
-transmission_chance=0.8	
+transmission_chance=0.9	
 hospital_beds=30
 mortality_rate=0.06
 width=700
@@ -246,14 +246,16 @@ color = 'tab:red'
 ax1.set_xlabel('Length of Pandemic (days)')
 ax1.set_ylabel('Daily Infections', color=color)
 ax1.plot(x, y1, color=color)
-ax1.set_ylim([0,300])
+#ax1.set_ylim([0,npeople])
 ax1.tick_params(axis='y')
 
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 color= 'tab:blue'
 ax2.set_ylabel('Total Infections', color=color)  # we already handled the x-label with ax1
 ax2.plot(x, y2, color=color)
-ax2.set_ylim([0,300])
+ax2.plot(x, infectedlist[1:])
+
+ax2.set_ylim([0,npeople])
 ax2.tick_params(axis='y')
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
