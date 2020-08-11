@@ -208,7 +208,6 @@ color = 'tab:red'
 ax1.set_xlabel('Length of Pandemic (days)')
 ax1.set_ylabel('Daily Infections', color=color)
 ax1.plot(x, y1, color=color)
-ax1.set_ylim([0,300])
 ax1.tick_params(axis='y')
 
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
