@@ -5,6 +5,7 @@ import random
 import math
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import transforms
 
 def createPerson(height,width,circleradius,point,maxvelocity):
 	#create a person and move them to a point
@@ -242,24 +243,38 @@ y2 = np.array(totalinfections)
 
 
 fig, ax1 = plt.subplots()
-color = 'tab:red'
+color1 = 'tab:red'
 ax1.set_xlabel('Length of Pandemic (days)')
-ax1.set_ylabel('Daily Infections', color=color)
-ax1.plot(x, y1, color=color)
-<<<<<<< HEAD
-=======
-#ax1.set_ylim([0,npeople])
->>>>>>> 347d3e0692ee2b780d127acae70b61804f99dbfd
+ax1.set_ylabel('Infections', color=color1)
+ax1.plot(x, y1, color=color1)
+# ax1.set_ylim([0,npeople])
+ax1.set_ylim(0,15)
 ax1.tick_params(axis='y')
 
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 color= 'tab:blue'
 ax2.set_ylabel('Total Infections', color=color)  # we already handled the x-label with ax1
 ax2.plot(x, y2, color=color)
-ax2.plot(x, infectedlist[1:])
-
+ax2.plot(x, infectedlist[1:], color='g')
 ax2.set_ylim([0,npeople])
 ax2.tick_params(axis='y')
+
+ax2.plot([0, n], [30, 30], 'k-')
+
+def text_box(x,y,ls,lc,**kw):
+
+    t = plt.gca().transData
+    figlocal = plt.gcf()
+
+    for s,c in zip(ls,lc):
+        text = plt.text(x,y," "+s+" ",color=c, transform=t, **kw)
+        text.draw(figlocal.canvas.get_renderer())
+        ex = text.get_tightbbox(fig.canvas.get_renderer())
+        t = transforms.offset_copy(text._transform, x=ex.width, units='dots')
+
+text_box(0,300, 'Daily infection, Total infections, Currently infected, Hospital beds'.split(),
+        ['red', 'red', 'blue', 'blue', 'green', 'green', 'black', 'black'],
+        size=8,)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
