@@ -58,7 +58,7 @@ stepsize=1
 npeople=350
 circlediam=20.0
 infectionduration=14
-transmission_chance=0.9	
+transmission_chance=0.9
 hospital_beds=30
 mortality_rate=0.06
 width=700
@@ -93,13 +93,13 @@ initpoint=(random.randint( (-width//2)+circlediam, (width//2)-circlediam), rando
 personlist.append(createPerson(height,width,circleradius,initpoint,maxvelocity))
 while len(personlist) < npeople:
 	#keep adding points until npeople is reached. Reject points if overlap another.
-	print (len(personlist), end='')
+	print (len(personlist), end=' ')
 	testpoint=(random.randint( (-width//2)+circleradius, (width//2)-circleradius), random.randint( (-height//2)+circleradius, (height//2)-circleradius))
 	if pointCheck(testpoint, personlist, circlediam) is True:
 		personlist.append(createPerson(height,width,circleradius,testpoint,maxvelocity))
 	else:
-		print ("\nRejected")
-
+		print ("\nPoint rejected")
+print("\nPopulating complete")
 
 #make one person infected
 personlist[-1]['infected']=True
@@ -241,40 +241,47 @@ del totalinfections[n]
 y2 = np.array(totalinfections)
 
 
-
 fig, ax1 = plt.subplots()
-color1 = 'tab:olive'
-ax1.set_xlabel('Length of Pandemic (days)')
-ax1.set_ylabel('Infections', color=color1)
-ax1.plot(x, y1, color=color1)
-# ax1.set_ylim([0,npeople])
-ax1.set_ylim(0,15)
+color= 'blue'
+ax1.set_ylabel('Total Infections', color=color)  # we already handled the x-label with ax1
+ax1.plot(x, y2, label="Cumulative Infections", color=color, linewidth=3)
+ax1.plot(x, infectedlist[1:], label="Current Infected", color='tab:blue', linewidth=3)
+ax1.set_ylim([0,y2[-1]*1.25])
 ax1.tick_params(axis='y')
 
+ax1.plot([0, n], [30, 30], 'k-', label="Available Hospital Beds")
+
+ax1.legend(loc="upper left", frameon=False)
+
+
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-color= 'tab:blue'
-ax2.set_ylabel('Total Infections', color=color)  # we already handled the x-label with ax1
-ax2.plot(x, y2, color=color)
-ax2.plot(x, infectedlist[1:], color='g')
-ax2.set_ylim([0,npeople])
+color1 = 'red'
+ax2.set_xlabel('Length of Pandemic (days)')
+ax2.set_ylabel('Daily Infections', color=color1)
+ax2.plot(x, y1, label="New Infections", color=color1, alpha=0.2, linestyle='dashed')
+# ax1.set_ylim([0,npeople])
+ax2.set_ylim(0,15)
 ax2.tick_params(axis='y')
 
-ax2.plot([0, n], [30, 30], 'k-')
+ax2.legend(loc="upper right", frameon=False)
 
-def text_box(x,y,ls,lc,**kw):
 
-    t = plt.gca().transData
-    figlocal = plt.gcf()
 
-    for s,c in zip(ls,lc):
-        text = plt.text(x,y," "+s+" ",color=c, transform=t, **kw)
-        text.draw(figlocal.canvas.get_renderer())
-        ex = text.get_tightbbox(fig.canvas.get_renderer())
-        t = transforms.offset_copy(text._transform, x=ex.width, units='dots')
 
-text_box(0,340, 'Daily infections; Total infections; Currently infected; Hospital beds'.split(),
-        ['olive', 'olive', 'blue', 'blue', 'green', 'green', 'black', 'black'],
-        size=8,)
-
-fig.tight_layout()  # otherwise the right y-label is slightly clipped
+# def text_box(x,y,ls,lc,**kw):
+# 
+#     t = plt.gca().transData
+#     figlocal = plt.gcf()
+# 
+#     for s,c in zip(ls,lc):
+#         text = plt.text(x,y," "+s+" ",color=c, transform=t, **kw)
+#         text.draw(figlocal.canvas.get_renderer())
+#         ex = text.get_tightbbox(fig.canvas.get_renderer())
+#         t = transforms.offset_copy(text._transform, x=ex.width, units='dots')
+# 
+# text_box(0,340, 'Daily infections; Total infections; Currently infected; Hospital beds'.split(),
+#         ['olive', 'olive', 'blue', 'blue', 'green', 'green', 'black', 'black'],
+#         size=8,)
+# 
+# fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
