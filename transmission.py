@@ -243,7 +243,7 @@ y2 = np.array(totalinfections)
 
 
 fig, ax1 = plt.subplots()
-color1 = 'tab:red'
+color1 = 'tab:olive'
 ax1.set_xlabel('Length of Pandemic (days)')
 ax1.set_ylabel('Infections', color=color1)
 ax1.plot(x, y1, color=color1)
@@ -272,8 +272,8 @@ def text_box(x,y,ls,lc,**kw):
         ex = text.get_tightbbox(fig.canvas.get_renderer())
         t = transforms.offset_copy(text._transform, x=ex.width, units='dots')
 
-text_box(0,300, 'Daily infection, Total infections, Currently infected, Hospital beds'.split(),
-        ['red', 'red', 'blue', 'blue', 'green', 'green', 'black', 'black'],
+text_box(0,340, 'Daily infections; Total infections; Currently infected; Hospital beds'.split(),
+        ['olive', 'olive', 'blue', 'blue', 'green', 'green', 'black', 'black'],
         size=8,)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
