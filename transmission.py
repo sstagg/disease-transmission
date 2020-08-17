@@ -55,10 +55,10 @@ steps=10000
 stepsize=1
 
 #variables that influence the outbreak
-npeople=350
+npeople=375
 circlediam=20.0
 infectionduration=14
-transmission_chance=0.9
+transmission_chance=0.9 #0.9 and 0.7 are good values to show how small changes to transmission makes dramatic effects on spread
 hospital_beds=30
 mortality_rate=0.06
 width=700
