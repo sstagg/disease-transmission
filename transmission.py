@@ -65,6 +65,7 @@ width=700
 height=700
 maxvelocity=6
 
+record_contacts=False #set to 'True' to calculate the total number of contacts with noninfected individuals for the first infected person.
 circleradius=circlediam/2
 
 #create a window 
@@ -104,12 +105,19 @@ print("\nPopulating complete")
 #make one person infected
 personlist[-1]['infected']=True
 personlist[-1]['point'].color('red')
+personlist[-1]['contacts']=0
 currentinfected=1
 
 #do a loop where the circle moves according to the velocity
 infectedlist=[]
 dailyinfections=[]
 totalinfections=[currentinfected]
+
+# if record_contacts is True, only iterate for infectionduration times
+if record_contacts:
+	steps=infectionduration
+	transmission_chance=1
+	
 for n in range(steps):
 	infectedlist.append(currentinfected)
 	if currentinfected == 0:
@@ -198,10 +206,12 @@ for n in range(steps):
 
 				personlist[a]['point'].goto(personlist[a]['x'],personlist[a]['y'])
 				personlist[b]['point'].goto(personlist[b]['x'],personlist[b]['y'])
-
+				
 				if personlist[a]['infected'] and personlist[b]['infected']:
 					continue
 				elif (personlist[a]['infected'] or personlist[b]['infected']) and random.uniform(0,1) < transmission_chance :
+					if record_contacts and (a == npeople-1 or b == npeople-1 ):
+						personlist[npeople-1]['contacts']+=1
 					#skip infection if either is immune
 					if personlist[a]['immune'] or personlist[b]['immune']:
 						continue
@@ -231,7 +241,9 @@ for person in personlist:
 print ("Total infected = %d/%d or %.2f%%" % (totalinfected, npeople, totalinfected/npeople*100))
 print ("Total dead = %d/%d or %.2f%%" % (totaldead, npeople, totaldead/npeople*100))
 print ("Total days of pandemic %d" % (n))
-
+if record_contacts:
+	print ("Total contacts with uninfected individuals for patient zero = %d" % ( personlist[npeople-1]['contacts'] ))
+	sys.exit()
 
 
 y1 = np.array(dailyinfections)
@@ -265,23 +277,4 @@ ax2.tick_params(axis='y')
 
 ax2.legend(loc="upper right", frameon=False)
 
-
-
-
-# def text_box(x,y,ls,lc,**kw):
-# 
-#     t = plt.gca().transData
-#     figlocal = plt.gcf()
-# 
-#     for s,c in zip(ls,lc):
-#         text = plt.text(x,y," "+s+" ",color=c, transform=t, **kw)
-#         text.draw(figlocal.canvas.get_renderer())
-#         ex = text.get_tightbbox(fig.canvas.get_renderer())
-#         t = transforms.offset_copy(text._transform, x=ex.width, units='dots')
-# 
-# text_box(0,340, 'Daily infections; Total infections; Currently infected; Hospital beds'.split(),
-#         ['olive', 'olive', 'blue', 'blue', 'green', 'green', 'black', 'black'],
-#         size=8,)
-# 
-# fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
