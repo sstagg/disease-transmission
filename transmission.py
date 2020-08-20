@@ -65,7 +65,7 @@ width=700
 height=700
 maxvelocity=6
 
-record_contacts=False #set to 'True' to calculate the total number of contacts with noninfected individuals for the first infected person.
+record_contacts=False #set to 'True' to calculate the contact rate fo noninfected individuals with the first infected person.
 circleradius=circlediam/2
 
 #create a window 
@@ -240,9 +240,10 @@ for person in personlist:
 		totaldead+=1
 print ("Total infected = %d/%d or %.2f%%" % (totalinfected, npeople, totalinfected/npeople*100))
 print ("Total dead = %d/%d or %.2f%%" % (totaldead, npeople, totaldead/npeople*100))
-print ("Total days of pandemic %d" % (n))
+print ("Total days of pandemic %d" % (n+1))
 if record_contacts:
-	print ("Total contacts with uninfected individuals for patient zero = %d" % ( personlist[npeople-1]['contacts'] ))
+	c=personlist[npeople-1]['contacts']/infectionduration
+	print ("Contact rate for uninfected individuals with patient zero = %f" % ( c ))
 	sys.exit()
 
 
