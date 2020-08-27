@@ -133,3 +133,5 @@ for step in range(steps):
 	
 
 win.mainloop()
+print "Done!"
+
